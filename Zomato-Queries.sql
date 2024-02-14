@@ -4,7 +4,7 @@
     SELECT * FROM product;
     
     
-  /* 1.what is total amount each customer spent on zomato ? */
+  /* 1. What is total amount each customer spent on zomato ? */
   
   SELECT
   s.userid,
@@ -15,7 +15,7 @@
   GROUP BY s.userid
   ORDER BY total_amount DESC;
   
-  /* 2.How many days has each customer visited zomato? */
+  /* 2. How many days has each customer visited zomato? */
   
   SELECT 
   userid,
@@ -24,7 +24,7 @@
   GROUP BY userid 
   ORDER BY no_of_days_visited DESC;
   
-  /* 3.what was the first product purchased by each customer? */
+  /* 3. What was the first product purchased by each customer? */
   
   WITH CTE AS(
   SELECT 
@@ -40,7 +40,7 @@
      ON c.product_id = p.product_id 
      WHERE c.rnk = 1;
     
-  /* 4. what is most purchased item on menu & how many times was it purchased by all customers ? */  
+  /* 4. What is most purchased item on menu & how many times was it purchased by all customers ? */  
   
   WITH CTE AS(
   SELECT 
@@ -54,18 +54,18 @@
   GROUP BY product_id,  p.product_name
   )
   
-  SELECT 
-  s.userid,
-  c.product_name,
-  COUNT(c.product_id) cnt_of_items
-  FROM sales s 
-  LEFT JOIN CTE c 
-  ON s.product_id = c.product_id 
-  WHERE c.rnk = 1
-  GROUP BY s.userid, c.product_id, c.product_name
-  ORDER BY cnt_of_items DESC;
+         SELECT 
+         s.userid,
+         c.product_name,
+         COUNT(c.product_id) cnt_of_items
+         FROM sales s 
+         LEFT JOIN CTE c 
+         ON s.product_id = c.product_id 
+         WHERE c.rnk = 1
+         GROUP BY s.userid, c.product_id, c.product_name
+         ORDER BY cnt_of_items DESC;
   
-  /* 5. which item was most popular for each customer? */
+  /* 5. Which item was most popular for each customer? */
   
     WITH CTE AS(
     SELECT 
@@ -81,11 +81,32 @@
     ORDER BY s.userid, s.product_id, p.product_name
     )
     
-    SELECT
-    userid,
-    product_name AS most_popular_product
-    FROM CTE 
-    WHERE rnk = 1;
+        SELECT
+        userid,
+        product_name AS most_popular_product
+        FROM CTE 
+        WHERE rnk = 1;
+
+/* 6. Which item was purchased first by the customer after they become a member? */
+    
+     WITH CTE AS(
+     SELECT 
+     s.*,
+     DENSE_RANK() OVER(PARTITION BY s.userid ORDER BY s.created_date) AS rnk
+     FROM sales s 
+     JOIN goldusers_signup g
+     ON s.userid = g.userid 
+     AND s.created_date > gold_signup_date
+     ORDER BY s.userid
+     )
+          SELECT 
+		  c.userid,
+          p.product_name AS first_product_after_member
+          FROM CTE c 
+          JOIN product p 
+		  ON c.product_id = p.product_id
+          WHERE c.rnk = 1
+          ORDER BY userid;
     
 
     
