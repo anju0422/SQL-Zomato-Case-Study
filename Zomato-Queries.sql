@@ -180,6 +180,34 @@ by each customer and for which product most points have been given till now. */
                         total_points
                         FROM CTE2
                         WHERE rnk = 1;
+
+/* 10. In the first year after a customer joins the gold program (including the join date ) irrespective of what customer 
+has purchased earn 5 zomato points for every 10rs spent. Who earned more points 1 or 3 and what is point earning in first year ? */
+
+WITH CTE AS(
+SELECT
+s.*,
+p.product_name,
+p.price,
+ROUND((p.price/10) *5,0)AS total_points,
+DENSE_RANK() OVER(PARTITION BY s.userid ORDER BY s.created_date) AS rnk
+FROM sales s
+JOIN goldusers_signup g
+ON s.userid = g.userid 
+AND YEAR(s.created_date) > YEAR(g.gold_signup_date)
+JOIN product p
+ON s.product_id = p.product_id
+)
+    SELECT
+    userid,
+    YEAR(created_date) AS first_year_after_member,
+    price,
+    total_points
+    FROM CTE 
+    WHERE rnk = 1
+    ORDER BY total_points DESC
+    LIMIT 1;
+
     
     
     
