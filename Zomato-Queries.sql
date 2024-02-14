@@ -100,11 +100,11 @@
      ORDER BY s.userid
      )
           SELECT 
-		  c.userid,
+	  c.userid,
           p.product_name AS first_product_after_member
           FROM CTE c 
           JOIN product p 
-		  ON c.product_id = p.product_id
+          ON c.product_id = p.product_id
           WHERE c.rnk = 1
           ORDER BY userid;
     
