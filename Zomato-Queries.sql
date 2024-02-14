@@ -128,6 +128,21 @@
           ON c.product_id = p.product_id
           WHERE c.rnk = 1
           ORDER BY userid;
+
+/* 8. What is total orders and amount spent for each member before they become a member? */
+
+     SELECT 
+     s.userid,
+     COUNT(s.created_date) AS no_of_orders,
+     SUM(p.price) AS total_amount
+     FROM sales s 
+     JOIN goldusers_signup g
+     ON s.userid = g.userid 
+     AND s.created_date < g.gold_signup_date
+     JOIN product p 
+     ON s.product_id = p.product_id
+     GROUP BY s.userid
+     ORDER BY s.userid;
     
     
     
