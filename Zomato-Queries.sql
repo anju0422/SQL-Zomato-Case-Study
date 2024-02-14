@@ -190,7 +190,7 @@ s.*,
 p.product_name,
 p.price,
 ROUND((p.price/10) *5,0)AS total_points,
-DENSE_RANK() OVER(PARTITION BY s.userid ORDER BY s.created_date) AS rnk
+DENSE_RANK() OVER(PARTITION BY s.userid ORDER BY YEAR(s.created_date)) AS rnk
 FROM sales s
 JOIN goldusers_signup g
 ON s.userid = g.userid 
