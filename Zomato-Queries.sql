@@ -143,6 +143,48 @@
      ON s.product_id = p.product_id
      GROUP BY s.userid
      ORDER BY s.userid;
+
+/*  9. If buying each product generates points for eg 5rs = 2 zomato point and each product has different purchasing points 
+for eg for p1 5rs = 1 zomato point,for p2 10rs = 1 zomato point and p3 2rs =1 zomato point, calculate points collected 
+by each customer and for which product most points have been given till now. */
+
+    WITH CTE AS(
+    SELECT
+    s.*,
+    p.product_name,
+    p.price,
+    ROUND(CASE 
+       WHEN p.product_name = 'p1' THEN p.price/5
+       WHEN p.product_name = 'p2' THEN p.price/10
+       WHEN p.product_name = 'p3' THEN p.price/2 
+       END,0) AS points
+    FROM sales s 
+    JOIN product p 
+    ON s.product_id = p.product_id
+    ORDER BY userid
+    ),  CTE2 AS(
+	            SELECT 
+                    userid,
+                    product_name,
+                    SUM(price) AS total_amount,
+                    SUM(points) AS total_points,
+                    DENSE_RANK() OVER(PARTITION BY userid ORDER BY SUM(points) DESC) AS rnk
+                    FROM CTE
+                    GROUP BY userid, product_name
+                    ORDER BY userid
+                    ) 
+                        SELECT 
+                        userid,
+                        product_name AS most_points_product,
+                        total_amount,
+                        total_points
+                        FROM CTE2
+                        WHERE rnk = 1;
+    
+    
+    
+    
+    
     
     
     
