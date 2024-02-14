@@ -107,6 +107,29 @@
           ON c.product_id = p.product_id
           WHERE c.rnk = 1
           ORDER BY userid;
+
+/* 7. Which item was purchased just before the customer became a member? */
+
+     WITH CTE AS(
+     SELECT 
+     s.*,
+     DENSE_RANK() OVER(PARTITION BY s.userid ORDER BY s.created_date DESC) AS rnk
+     FROM sales s 
+     JOIN goldusers_signup g
+     ON s.userid = g.userid 
+     AND s.created_date < gold_signup_date
+     ORDER BY s.userid
+     )
+          SELECT 
+	  c.userid,
+          p.product_name AS product_before_member
+          FROM CTE c 
+          JOIN product p 
+          ON c.product_id = p.product_id
+          WHERE c.rnk = 1
+          ORDER BY userid;
+    
+    
     
 
     
