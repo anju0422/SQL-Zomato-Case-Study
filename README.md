@@ -12,5 +12,4 @@
 9. If buying each product generates points for eg 5rs = 2 zomato point and each product has different purchasing points for eg for p1 5rs = 1 zomato point, for p2 10rs = 1 zomato point and p3 2rs =1 zomato point, calculate points collected by each customer and for which product most points have been given till now. 
 10. In the first year after a customer joins the gold program (including the join date ) irrespective of what customer 
 has purchased earn 5 zomato points for every 10rs spent. Who earned more points 1 or 3 and what is point earning in first year?
-11. Rank all transaction of the customers.
-12. Rank all transaction for each member whenever they are zomato gold member for every non gold member transaction mark as na.  
+ 
